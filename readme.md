@@ -1,5 +1,3 @@
-![](./assets/image.png)
-
 # Cahier des charges
 
 - Sommaire
