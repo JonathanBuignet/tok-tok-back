@@ -105,8 +105,8 @@ const authController = {
         ...user.dataValues,
       };
       delete userObj.password;
-      delete userObj.longitude;
-      delete userObj.latitude;
+      // delete userObj.longitude;
+      // delete userObj.latitude;
 
       res.status(201).json({
         message: "Compte crée",
@@ -155,8 +155,8 @@ const authController = {
       };
       // Et on en supprimer les données sensibles/inutiles
       delete userObj.password
-      delete userObj.longitude
-      delete userObj.latitude;
+      // delete userObj.longitude
+      // delete userObj.latitude;
 
       res.json({ auth: true, token: token, user: userObj });
     } catch (error) {

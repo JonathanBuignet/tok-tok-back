@@ -7,10 +7,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "db:create": "psql -U tok -d tok -f ./data/create_db.sql",
-    "db:populate": "psql -U tok -d tok -f ./data/data.sql",
+    "db:create": "psql -U tok -d toktok -f ./data/create_db.sql",
+    "db:populate": "psql -U tok -d toktok -f ./data/data.sql",
     "db:reset": "npm run db:create && npm run db:populate",
-    "db:connect": "psql -U tok -d tok"
+    "db:connect": "psql -U tok -d toktok",
+    "db:connect2": "psql --host=dpg-cmej0n7109ks73c6o7h0-a.frankfurt-postgres.render.com --port=5432 --username=tok --dbname=toktok --set=sslmode=require"
+
   },
   "author": "",
   "license": "ISC",
