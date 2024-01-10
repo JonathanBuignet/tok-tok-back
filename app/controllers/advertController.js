@@ -135,7 +135,7 @@ const advertsController = {
       images.forEach(async (e, index) => {
         const image = Advert_has_image.build({
           advert_id: newAdvert.id,
-          thumbnail: `${req.protocol}://${req.get("host")}/images/${
+          thumbnail: `${req.protocol}://${req.get("host")}/media/${
             req.files[index].filename
           }`,
         });
