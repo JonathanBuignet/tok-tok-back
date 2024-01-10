@@ -41,7 +41,6 @@ const advertsController = {
       });
       res.json(adverts);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: "Erreur Serveur !" });
     }
   },
@@ -110,7 +109,6 @@ const advertsController = {
 
       res.json(advert);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ error: "Erreur Serveur !" });
     }
   },
@@ -119,7 +117,6 @@ const advertsController = {
     try {
       const { title, content, price, tag_id } = req.body;
       const { user } = req;
-      console.log(req.files);
       const images = req.files;
 
       const slug = `${title.split(" ").join("-")}-${Date.now()}`;
@@ -148,7 +145,6 @@ const advertsController = {
 
       res.status(201).json(newAdvert);
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: "Erreur Serveur !" });
     }
   },
@@ -157,8 +153,6 @@ const advertsController = {
     try {
       const { title, content, price, tag_id } = req.body;
       const images = req.files;
-
-      console.log(images, images.length);
 
       const advert = await Advert.findByPk(req.params.id, {
         include: {
@@ -197,13 +191,11 @@ const advertsController = {
 
       res.json(advert);
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: "Erreur Serveur !" });
     }
   },
 
   remove: async (req, res) => {
-    //TODO: ici il faudra rajouter une boite de dialogue pour confirmer la suppression
     try {
       const { id } = req.params;
 
@@ -223,7 +215,6 @@ const advertsController = {
       advert.destroy();
       res.json({ message: "Annonce supprimée !" });
     } catch (error) {
-      console.log(error);
       return res.status(500).json({ error: "Erreur Serveur !" });
     }
   },
