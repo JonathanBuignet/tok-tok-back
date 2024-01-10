@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const path = require('path');
 const cors = require("cors");
 const express = require("express");
 const middleware404 = require("./app/middlewares/middleware404");
@@ -26,7 +27,12 @@ app.use(express.static('public'));
 
 app.use(router);
 
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.use(middleware404);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

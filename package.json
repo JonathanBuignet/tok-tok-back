@@ -12,7 +12,6 @@
     "db:reset": "npm run db:create && npm run db:populate",
     "db:connect": "psql -U tok -d toktok",
     "db:connect2": "psql --host=dpg-cmej0n7109ks73c6o7h0-a.frankfurt-postgres.render.com --port=5432 --username=tok --dbname=toktok --set=sslmode=require"
-
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +23,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "multer": "^1.4.5-lts.1",
+    "path": "^0.12.7",
     "pg": "^8.11.1",
     "sanitize-html": "^2.11.0",
     "sequelize": "^6.32.1",

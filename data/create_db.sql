@@ -102,4 +102,14 @@ CREATE TABLE "like" (
   FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
 );
   
+INSERT INTO "tag" ("name")
+VALUES ('maison'),
+    ('jardin'),
+    ('vetements'),
+    ('animaux'),
+    ('musique'),
+    ('livres'),
+    ('bricolage'),
+    ('vehicules');
+
   COMMIT ; 
