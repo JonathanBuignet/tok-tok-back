@@ -1,7 +1,11 @@
 const { Router } = require("express");
 const sanitize = require("./middlewares/sanitize");
 const verifyAuthMiddleware = require("./middlewares/verifyAuthMiddleware");
-const multer = require("./middlewares/multerMiddleware");
+
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
 const {
   advertController,
   authController,
@@ -15,8 +19,6 @@ const {
 
 const router = Router();
 
-//TODO: Routes de l'API : router.get('/'); -> une page de 'doc' listant toutes nos routes. On renderera un fichier html.
-
 router.post("*", sanitize);
 router.patch("*", sanitize);
 
@@ -26,17 +28,17 @@ router.post("/signup", authController.signup);
 
 /* Posts -----------------------------------------------------------------*/
 router.get("/posts", verifyAuthMiddleware, postController.getAll);
-router.get("/post/:id", verifyAuthMiddleware, postController.getOne); 
+router.get("/post/:id", verifyAuthMiddleware, postController.getOne);
 router.post(
   "/posts",
   verifyAuthMiddleware,
-  multer.single("thumbnail"),
+  upload.single("thumbnail"),
   postController.createPost
 );
 router.patch(
   "/posts/:id",
   verifyAuthMiddleware,
-  multer.single("thumbnail"),
+  upload.single("thumbnail"),
   postController.update
 );
 router.delete("/posts/:id", verifyAuthMiddleware, postController.remove);
@@ -46,14 +48,13 @@ router.get("/profile/:slug", verifyAuthMiddleware, userController.getOne); //? r
 router.patch(
   "/my-profile/edit",
   verifyAuthMiddleware,
-  multer.single("thumbnail"),
-  // multer.single("banner"), // A garder masqué tant qu'on a pas l'input banner
+  upload.single("thumbnail"),
   userController.update
 );
 router.patch(
   "/my-profile/edit-banner",
   verifyAuthMiddleware,
-  multer.single("banner"),
+  upload.single("banner"),
   userController.changeBanner
 );
 router.delete(
@@ -64,18 +65,22 @@ router.delete(
 
 /* Adverts ---------------------------------------------------------------*/
 router.get("/adverts", verifyAuthMiddleware, advertController.getAll);
-router.get("/profile/:id/adverts", verifyAuthMiddleware, advertController.getAllFromUser);
+router.get(
+  "/profile/:id/adverts",
+  verifyAuthMiddleware,
+  advertController.getAllFromUser
+);
 router.get("/adverts/:slug", verifyAuthMiddleware, advertController.getOne);
 router.post(
-  "/adverts",
+  '/adverts',
   verifyAuthMiddleware,
-  multer.array("thumbnails"),
+  upload.array('thumbnails'),
   advertController.create
 );
 router.patch(
   "/adverts/:id",
   verifyAuthMiddleware,
-  multer.array("thumbnails"),
+  upload.array("thumbnails"),
   advertController.update
 );
 router.delete("/adverts/:id", verifyAuthMiddleware, advertController.remove);
@@ -94,10 +99,13 @@ router.delete("/adverts/:id", verifyAuthMiddleware, advertController.remove);
 //   messageController.sendMessage
 // );
 
-router.get("/contacts", verifyAuthMiddleware, messageController.getContacts); 
-router.get("/messages/:destId", verifyAuthMiddleware, messageController.getMessages);
+router.get("/contacts", verifyAuthMiddleware, messageController.getContacts);
+router.get(
+  "/messages/:destId",
+  verifyAuthMiddleware,
+  messageController.getMessages
+);
 router.post("/messages", verifyAuthMiddleware, messageController.sendMessage);
-
 
 /* Favourites --------------------------------------------------------------*/
 router.get("/favourites", verifyAuthMiddleware, favouriteController.getAll);
@@ -119,7 +127,5 @@ router.delete("/likes/:postId", verifyAuthMiddleware, likeController.remove);
 
 /* Categories -----------------------------------------------*/
 router.get("/categories", verifyAuthMiddleware, categoriesController.getAll);
-
-
 
 module.exports = router;

@@ -8,6 +8,7 @@ Tag.init(
     name: {
       type: DataTypes.TEXT,
       allowNull: false,
+      charset: 'utf8',
     }
   },
   {

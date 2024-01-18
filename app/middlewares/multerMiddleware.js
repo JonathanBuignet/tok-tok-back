@@ -17,7 +17,7 @@ const VIDEO_MIME_TYPES = {
 const storage = multer.diskStorage({
   destination: (_, file, callback) => {
     if (IMAGE_MIME_TYPES[file.mimetype]) {
-      callback(null, "/media"); // Destination pour les images
+      callback(null, "/public/images"); // Destination pour les images
     } else if (VIDEO_MIME_TYPES[file.mimetype]) {
       callback(null, "public/videos"); // Destination pour les vidéos
     } else {
