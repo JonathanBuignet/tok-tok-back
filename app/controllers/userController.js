@@ -1,6 +1,7 @@
 const { Op } = require("sequelize");
 const { User } = require("../models/index");
 const { v4: uuidv4 } = require("uuid");
+const { uploadImageToS3 } = require("../middlewares/s3Service");
 
 const userController = {
   getOne: async (req, res) => {
@@ -140,9 +141,9 @@ const userController = {
         user.description = description;
       }
       if (req.file) {
-        user.thumbnail = `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`;
+        const imageUrl = await uploadImageToS3(req.file);
+        user.thumbnail = imageUrl;
+        console.log(user.thumbnail);
       }
       if (address) {
         user.address = address;
@@ -185,20 +186,19 @@ const userController = {
     }
   },
 
-  changeBanner: async(req, res) => {
+  changeBanner: async (req, res) => {
     try {
-      const {user} = req;
-      
+      const { user } = req;
+
       if (req.file) {
-        user.banner = `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`;
+        const imageUrl = await uploadImageToS3(req.file);
+        user.banner = imageUrl;
       }
 
       await user.save();
-      res.status(201).json(user)
+      res.status(201).json(user);
     } catch (error) {
-      console.log(error);  
+      console.log(error);
     }
   },
 

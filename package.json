@@ -10,13 +10,14 @@
     "db:create": "psql -U tok -d toktok -f ./data/create_db.sql",
     "db:populate": "psql -U tok -d toktok -f ./data/data.sql",
     "db:reset": "npm run db:create && npm run db:populate",
+    "db:reset2": "psql --host=dpg-cmej0n7109ks73c6o7h0-a.frankfurt-postgres.render.com --port=5432 --username=tok --dbname=toktok --set=sslmode=require -f ./data/create_db.sql -f ./data/data.sql",
     "db:connect": "psql -U tok -d toktok",
     "db:connect2": "psql --host=dpg-cmej0n7109ks73c6o7h0-a.frankfurt-postgres.render.com --port=5432 --username=tok --dbname=toktok --set=sslmode=require"
-
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1534.0",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
@@ -24,6 +25,7 @@
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.1",
     "multer": "^1.4.5-lts.1",
+    "multer-s3": "^3.0.1",
     "pg": "^8.11.1",
     "sanitize-html": "^2.11.0",
     "sequelize": "^6.32.1",

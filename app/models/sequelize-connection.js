@@ -5,6 +5,7 @@ const { Sequelize } = require("sequelize");
 const sequelize = new Sequelize(process.env.PG_URL, {
   dialect: "postgresql",
   dialectOptions: {
+    charset: 'utf8',
     ssl: {
       require: true,
       rejectUnauthorized: false,

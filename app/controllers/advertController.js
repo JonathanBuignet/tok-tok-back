@@ -1,5 +1,6 @@
 const { Advert, Advert_has_image } = require("../models/index");
 const radius_calc = require("../../public/radius_calc");
+const { uploadImageToS3 } = require("../middlewares/s3Service");
 
 const advertsController = {
   getAll: async (req, res) => {
@@ -48,7 +49,6 @@ const advertsController = {
   getAllFromUser: async (req, res) => {
     try {
       const { id } = req.params;
-
       const userAdverts = await Advert.findAll({
         where: {
           user_id: id,
@@ -56,7 +56,15 @@ const advertsController = {
         include: [
           {
             association: "advert_creator",
-            attributes: ["id", "firstname", "lastname", "thumbnail", "slug", "latitude", "longitude"],
+            attributes: [
+              "id",
+              "firstname",
+              "lastname",
+              "thumbnail",
+              "slug",
+              "latitude",
+              "longitude",
+            ],
           },
           { association: "images", attributes: ["thumbnail"] },
           {
@@ -65,7 +73,6 @@ const advertsController = {
           },
         ],
       });
-
       res.json(userAdverts);
     } catch (error) {
       res.status(500).json("Erreur serveur");
@@ -75,33 +82,29 @@ const advertsController = {
   getOne: async (req, res) => {
     try {
       const { slug } = req.params;
-      const advert = await Advert.findOne(
-        {
-          where: { slug: slug },
-        },
-        {
-          include: [
-            "tag",
-            "images",
-            {
-              association: "advert_creator",
-              attributes: {
-                exclude: [
-                  "email",
-                  "password",
-                  "description",
-                  "created_at",
-                  "updated_at",
-                ],
-              },
+      const advert = await Advert.findOne({
+        where: { slug: slug },
+        include: [
+          "tag",
+          "images",
+          {
+            association: "advert_creator",
+            attributes: {
+              exclude: [
+                "email",
+                "password",
+                "description",
+                "created_at",
+                "updated_at",
+              ],
             },
-            {
-              association: "tag",
-              attributes: ["id", "name"],
-            },
-          ],
-        }
-      );
+          },
+          {
+            association: "tag",
+            attributes: ["id", "name"],
+          },
+        ],
+      });
 
       if (!advert) {
         return res.status(404).json({ error: "Annonce introuvable" });
@@ -132,20 +135,19 @@ const advertsController = {
 
       await newAdvert.save();
 
-      images.forEach(async (e, index) => {
+      const imagePromises = images.map(async (file) => {
+        const imageUrl = await uploadImageToS3(file);
         const image = Advert_has_image.build({
           advert_id: newAdvert.id,
-          thumbnail: `${req.protocol}://${req.get("host")}/media/${
-            req.files[index].filename
-          }`,
+          thumbnail: imageUrl,
         });
-
         await image.save();
       });
 
+      await Promise.all(imagePromises);
       res.status(201).json(newAdvert);
     } catch (error) {
-      return res.status(500).json({ error: "Erreur Serveur !" });
+      res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -178,16 +180,15 @@ const advertsController = {
       advert.save();
 
       if (images.length) {
-        images.forEach(async (e, index) => {
+        images.map(async (file) => {
+          const imageUrl = await uploadImageToS3(file);
           const image = Advert_has_image.build({
             advert_id: advert.id,
-            thumbnail: `${req.protocol}://${req.get("host")}/images/${
-              req.files[index].filename
-            }`,
+            thumbnail: imageUrl,
           });
           await image.save();
         });
-      } 
+      }
 
       res.json(advert);
     } catch (error) {
